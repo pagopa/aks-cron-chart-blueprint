@@ -36,7 +36,7 @@ This is the official and recommended method to adopt this chart.
 
 ### Quick start
 
-Create a `helm` folder inside your microservice project in which install the
+Create a `helm` folder inside your cron service project in which install the
 Helm chart:
 
 ```shell
@@ -46,7 +46,7 @@ mkdir helm && cd helm
 Add Helm repo:
 
 ```shell
-helm repo add pagopa-microservice https://pagopa.github.io/aks-cron-chart-blueprint
+helm repo add pagopa-cron https://pagopa.github.io/aks-cron-chart-blueprint
 ```
 
 > If you had already added this repo earlier, run `helm repo update` to retrieve
