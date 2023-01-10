@@ -1,0 +1,125 @@
+# -- Namespace in which deploy the cron
+namespace: ""
+
+# -- Helm chart name override
+nameOverride: ""
+
+# -- Helm chart fullname override
+fullnameOverride: ""
+
+#
+# CronJob
+#
+
+# -- Configure deployment
+# @default -- -
+cronjob:
+  # -- (bool) create the deployment manifest
+  create: true
+
+schedule: ""
+concurrencyPolicy: "Allow"
+successfulJobsHistoryLimit: 3
+failedJobsHistoryLimit: 1
+parallelism: 1
+terminationGracePeriodSeconds: 30
+
+# -- Configure values from config maps external to chart. E.g already present into cluster, see documentation
+# @default -- {}
+envConfigMapExternals: {}
+
+image:
+  # -- Docker reposity for the container
+  repository: ""
+  # -- Container TAG
+  tag: "v0.0.0"
+  # -- Pull policy to use
+  pullPolicy: Always
+
+args: []
+
+command: []
+
+# -- Sidecars, each object has exactly the same schema as a Pod, except it does not have an apiVersion or kind
+sidecars: []
+
+# -- POD resources section
+# @default -- -
+resources:
+  # -- request is mandatory
+  requests:
+    memory: "96Mi"
+    cpu: "40m"
+  # -- limits is mandatory
+  limits:
+    memory: "128Mi"
+    cpu: "150m"
+
+# -- Environment config to use for the canary container
+envConfig: {}
+
+# -- Environment secrets to use for the canary container
+envSecret: {}
+
+# -- Environment config from k8s metadata
+envFieldRef: {}
+
+# -- File config pattern to mount
+fileConfig: {}
+
+podAnnotations: {}
+
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+
+# -- K8s node selectors
+nodeSelector: {}
+
+# -- Pod taints toleration
+tolerations: []
+
+# -- Pod labels affinity
+affinity: {}
+
+fileShare:
+  # -- (bool) create the service manifest
+  create: false
+  # -- (list) Which fileshare use (! this name is used even inside the deployment)
+  folders: []
+
+pod:
+  # -- (list) Which ports use (! this port is used even inside the deployment)
+  ports: []
+
+#
+# Pod identity and KV connection
+#
+
+# -- Secrect provider class allow to connect to azure kv
+# @default -- -
+secretProviderClass:
+  # -- (bool) create or not the secret provider class manifest
+  create: true
+
+# -- Azure KeyVault connection configuration
+# @default -- -
+keyvault:
+  # -- KV name
+  name: ""
+  # -- Tenant id (uuid)
+  tenantId: ""
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+podMonitor:
+  # -- (bool) Create or not the ingress manifest
+  create: false
+  # -- (list) Which fileshare use (! this name is used even inside the deployment)
+  podMetricsEndpoints: []

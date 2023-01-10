@@ -1,0 +1,168 @@
+{{- if .Values.cronjob.create -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "cron-chart.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "cron-chart.labels" . | nindent 4 }}
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  schedule: {{ .Values.schedule | quote }}
+  concurrencyPolicy: {{ .Values.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      parallelism: {{ .Values.parallelism }}
+      template:
+        metadata:
+          {{- with .Values.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+          labels:
+            aadpodidbinding: "{{ .Values.namespace }}-pod-identity"
+            {{- include "cron-chart.selectorLabels" . | nindent 12 }}
+        spec:
+          automountServiceAccountToken: false
+          serviceAccountName: {{ include "cron-chart.serviceAccountName" . }}
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 14 }}
+          restartPolicy: Never
+          terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+          volumes:
+            - name: tmp
+              emptyDir: {}
+            {{- if .Values.fileShare.create }}
+            {{- range $k, $v := .Values.fileShare.folders }}
+            - name: file-azure-{{ $v.name }}
+              csi:
+                driver: file.csi.azure.com
+                readOnly: {{ $v.readOnly }}
+                volumeAttributes:
+                  secretName: {{ include "cron-chart.fullname" $ }}
+                  shareName: {{ $v.name }}
+                  mountOptions: {{ $v.mountOptions }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.envSecret }}
+            - name: secrets-store-inline
+              csi:
+                driver: secrets-store.csi.k8s.io
+                readOnly: true
+                volumeAttributes:
+                  secretProviderClass: {{ include "cron-chart.fullname" $ }}
+            {{- end }}
+            {{- if .Values.fileConfig }}
+            - name: file-config
+              configMap:
+                name: {{ include "cron-chart.fullname" $ }}
+                defaultMode: 420
+                items:
+              {{- range $key, $val := .Values.fileConfig }}
+                  - key: {{ $key }}
+                    path: {{ $key }}
+              {{- end }}
+            {{- end }}
+          containers:
+            - name: {{ .Chart.Name }}
+              securityContext:
+                {{- toYaml .Values.securityContext | nindent 16 }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              {{- if .Values.command }}
+              command:
+                {{- range .Values.command }}
+                - {{ . }}
+                {{- end }}
+              {{- end}}
+              {{- if .Values.args }}
+              args:
+                {{- range .Values.args }}
+                - {{ . }}
+                {{- end}}
+              {{- end}}
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              ports:
+              {{- range .Values.pod.ports }}
+                - name: app-port-{{ . }}
+                  containerPort: {{ . }}
+                  protocol: TCP
+              {{- end }}
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+              {{- if or .Values.envSecret .Values.fileConfig .Values.fileShare.create }}
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+                {{- if .Values.envSecret }}
+                - name: secrets-store-inline
+                  mountPath: "/mnt/secrets-store"
+                  readOnly: true
+                {{- end }}
+                {{- if .Values.fileConfig }}
+                {{- range $key, $val := .Values.fileConfig }}
+                - name: file-config
+                  mountPath: "/mnt/file-config/{{ $key }}"
+                  subPath: {{ $key }}
+                  readOnly: true
+                {{- end }}
+                {{- end }}
+                {{- if .Values.fileShare.create }}
+                {{- range $k, $v := .Values.fileShare.folders }}
+                - name: file-azure-{{ $v.name }}
+                  mountPath: "/mnt/file-azure/{{ $v.name }}"
+                {{- end }}
+                {{- end }}
+              {{- end }}
+              env:
+                #secrets
+                {{- range $name, $value := .Values.envSecret }}
+                - name: {{ $name }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "cron-chart.fullname" $ }}
+                      key: {{ $value }}
+                {{- end }}
+                #configmap
+                {{- range $key, $val := .Values.envConfig }}
+                - name: {{ $key }}
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "cron-chart.fullname" $ }}
+                      key: {{ $key }}
+                {{- end }}
+                #field ref
+                {{- range $key, $val := .Values.envFieldRef }}
+                - name: {{ $key }}
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: {{ $val }}
+                {{- end }}
+                #external configmap values
+                {{- range $key, $valMap := .Values.envConfigMapExternals }}
+                {{- range $internKey, $internVal := $valMap }}
+                - name: {{ $internKey }}
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ $key }}
+                      key: {{ $internVal }}
+                {{- end }}
+                {{- end }}
+            {{- with .Values.sidecars }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}
