@@ -91,6 +91,10 @@ fileShare:
   # -- (list) Which fileshare use (! this name is used even inside the deployment)
   folders: []
 
+fileConfigExternals:
+  create: false
+  configMaps: []
+
 pod:
   # -- (list) Which ports use (! this port is used even inside the deployment)
   ports: []

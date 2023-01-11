@@ -66,6 +66,17 @@ spec:
                     path: {{ $key }}
               {{- end }}
             {{- end }}
+            {{- if .Values.fileConfigExternals.create }}
+            {{- range $k, $v := .Values.fileConfigExternals.configMaps }}
+            - name: file-config-external-{{ $v.name }}
+              configMap:
+                name: {{ $v.name }}
+                defaultMode: 420
+                items:
+                  - key: {{ $v.key }}
+                    path: {{ $v.key }}
+            {{- end }}
+            {{- end }}
           containers:
             - name: {{ .Chart.Name }}
               securityContext:
@@ -92,7 +103,7 @@ spec:
               {{- end }}
               resources:
                 {{- toYaml .Values.resources | nindent 16 }}
-              {{- if or .Values.envSecret .Values.fileConfig .Values.fileShare.create }}
+              {{- if or .Values.envSecret .Values.fileConfig .Values.fileShare.create .Values.fileConfigExternals.create }}
               volumeMounts:
                 - name: tmp
                   mountPath: /tmp
@@ -113,6 +124,14 @@ spec:
                 {{- range $k, $v := .Values.fileShare.folders }}
                 - name: file-azure-{{ $v.name }}
                   mountPath: "/mnt/file-azure/{{ $v.name }}"
+                {{- end }}
+                {{- end }}
+                {{- if .Values.fileConfigExternals.create }}
+                {{- range $k, $v := .Values.fileConfigExternals.configMaps }}
+                - name: file-config-external-{{ $v.name }}
+                  mountPath: "/mnt/file-config-external/{{ $v.name }}/{{ $v.key }}"
+                  subPath: {{ $v.key }}
+                  readOnly: true
                 {{- end }}
                 {{- end }}
               {{- end }}
