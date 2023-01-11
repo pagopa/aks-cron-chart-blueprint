@@ -127,3 +127,4 @@ podMonitor:
   create: false
   # -- (list) Which fileshare use (! this name is used even inside the deployment)
   podMetricsEndpoints: []
+
