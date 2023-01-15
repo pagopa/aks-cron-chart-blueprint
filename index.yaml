@@ -3,6 +3,16 @@ entries:
   cron-chart:
   - apiVersion: v2
     appVersion: 0.0.0
+    created: "2023-01-15T10:01:23.483195719Z"
+    description: A Helm chart for pagoPA cron
+    digest: 427664ba0e6c27b828249cb6b3a3d55fe06a4e10dfccdf412d7f4cab69fc64ff
+    name: cron-chart
+    type: application
+    urls:
+    - https://github.com/pagopa/aks-cron-chart-blueprint/releases/download/cron-chart-1.3.0/cron-chart-1.3.0.tgz
+    version: 1.3.0
+  - apiVersion: v2
+    appVersion: 0.0.0
     created: "2023-01-15T00:46:15.775548682Z"
     description: A Helm chart for pagoPA cron
     digest: b26e4c1213b68cbbb892756672f5f2159c7d05e84d84312cb16adf46a4418af2
@@ -31,4 +41,4 @@ entries:
     urls:
     - https://github.com/pagopa/aks-cron-chart-blueprint/releases/download/cron-chart-1.0.0/cron-chart-1.0.0.tgz
     version: 1.0.0
-generated: "2023-01-15T00:46:15.775558282Z"
+generated: "2023-01-15T10:01:23.483212619Z"
