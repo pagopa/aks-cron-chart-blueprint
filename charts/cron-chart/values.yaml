@@ -65,7 +65,10 @@ envSecret: {}
 envFieldRef: {}
 
 # -- File config pattern to mount
-fileConfig: {}
+fileConfig:
+  create: false
+  fileMode: 420
+  files: {}
 
 podAnnotations: {}
 

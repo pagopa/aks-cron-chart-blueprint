@@ -1,4 +1,4 @@
-{{- if or .Values.envConfig .Values.fileConfig -}}
+{{- if or .Values.envConfig .Values.fileConfig.create -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,8 +7,12 @@ metadata:
   labels:
     {{- include "cron-chart.labels" . | nindent 4 }}
 data:
+  {{- if .Values.envConfig -}}
   {{- toYaml .Values.envConfig | nindent 2 }}
-  {{- toYaml .Values.fileConfig | nindent 2 }}
+  {{- end }}
+  {{- if .Values.fileConfig.create -}}
+  {{- toYaml .Values.fileConfig.files | nindent 2 }}
+  {{- end }}
 {{- end }}
 
 ---

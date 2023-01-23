@@ -1,6 +1,6 @@
 # cron-chart
 
-![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 1.2.0](https://img.shields.io/badge/Version-1.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for pagoPA cron
 
@@ -19,7 +19,7 @@ A Helm chart for pagoPA cron
 | envFieldRef | object | `{}` | Environment config from k8s metadata |
 | envSecret | object | `{}` | Environment secrets to use for the canary container |
 | failedJobsHistoryLimit | int | `1` |  |
-| fileConfig | object | `{}` | File config pattern to mount |
+| fileConfig | object | `{"create":false,"fileMode":420,"files":{}}` | File config pattern to mount |
 | fileConfigExternals.configMaps | list | `[]` |  |
 | fileConfigExternals.create | bool | `false` |  |
 | fileShare.create | bool | `false` | create the service manifest |
