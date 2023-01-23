@@ -47,7 +47,7 @@ spec:
                   mountOptions: {{ $v.mountOptions }}
             {{- end }}
             {{- end }}
-            {{- if .Values.envSecret }}
+            {{- if or .Values.envSecret .Values.fileShare.create }}
             - name: secrets-store-inline
               csi:
                 driver: secrets-store.csi.k8s.io
@@ -55,13 +55,13 @@ spec:
                 volumeAttributes:
                   secretProviderClass: {{ include "cron-chart.fullname" $ }}
             {{- end }}
-            {{- if .Values.fileConfig }}
+            {{- if .Values.fileConfig.create }}
             - name: file-config
               configMap:
                 name: {{ include "cron-chart.fullname" $ }}
-                defaultMode: 420
+                defaultMode: {{ .Values.fileConfig.fileMode }}
                 items:
-              {{- range $key, $val := .Values.fileConfig }}
+              {{- range $key, $val := .Values.fileConfig.files }}
                   - key: {{ $key }}
                     path: {{ $key }}
               {{- end }}
@@ -103,17 +103,16 @@ spec:
               {{- end }}
               resources:
                 {{- toYaml .Values.resources | nindent 16 }}
-              {{- if or .Values.envSecret .Values.fileConfig .Values.fileShare.create .Values.fileConfigExternals.create }}
               volumeMounts:
                 - name: tmp
                   mountPath: /tmp
-                {{- if .Values.envSecret }}
+                {{- if or .Values.envSecret .Values.fileShare.create }}
                 - name: secrets-store-inline
                   mountPath: "/mnt/secrets-store"
                   readOnly: true
                 {{- end }}
-                {{- if .Values.fileConfig }}
-                {{- range $key, $val := .Values.fileConfig }}
+                {{- if .Values.fileConfig.create }}
+                {{- range $key, $val := .Values.fileConfig.files }}
                 - name: file-config
                   mountPath: "/mnt/file-config/{{ $key }}"
                   subPath: {{ $key }}
@@ -134,7 +133,6 @@ spec:
                   readOnly: true
                 {{- end }}
                 {{- end }}
-              {{- end }}
               env:
                 #secrets
                 {{- range $name, $value := .Values.envSecret }}
