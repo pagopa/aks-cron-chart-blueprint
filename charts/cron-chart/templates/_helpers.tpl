@@ -59,13 +59,7 @@ app.kubernetes.io/name: {{ include "cron-chart.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{/*
-Progressive Delivery Selector labels
-*/}}
-{{- define "cron-chart.selectorLabelsCanaryDelivery" -}}
-app.kubernetes.io/name: {{ include "cron-chart.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
+
 
 {{/*
 Create the name of the service account to use
