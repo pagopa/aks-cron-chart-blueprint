@@ -25,6 +25,7 @@ spec:
           labels:
             aadpodidbinding: "{{ .Values.namespace }}-pod-identity"
             {{- include "cron-chart.selectorLabels" . | nindent 12 }}
+            {{- include "cron-chart.extraLabels" . | nindent 12 }}
         spec:
           automountServiceAccountToken: false
           serviceAccountName: {{ include "cron-chart.serviceAccountName" . }}
