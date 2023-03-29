@@ -58,11 +58,19 @@ resources:
 # -- Environment config to use for the canary container
 envConfig: {}
 
-# -- Environment secrets to use for the canary container
-envSecret: {}
+# -- Configure secret provider with secrets to mount as environment variables
+secretProvider:
+  create: false
+  envSecrets: {}
+  keyvault:
+    name: ""
+    tenantId: ""
 
 # -- Environment config from k8s metadata
 envFieldRef: {}
+
+# -- Configure files to mount as config maps
+configMapFromFile: {}
 
 # -- File config pattern to mount
 fileConfig:
@@ -77,7 +85,11 @@ podSecurityContext:
     type: RuntimeDefault
 
 securityContext:
+  readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - all
 
 # -- K8s node selectors
 nodeSelector: {}
@@ -88,37 +100,25 @@ tolerations: []
 # -- Pod labels affinity
 affinity: {}
 
-fileShare:
-  # -- (bool) create the service manifest
+# -- Configure mounted volumes with secrets needed to mount them
+# @default -- {}
+providedVolumeMount:
   create: false
-  # -- (list) Which fileshare use (! this name is used even inside the deployment)
+  envSecrets: {}
   folders: []
+# -- Configure optional tmp volume to mount
+tmpVolumeMount:
+  create: false
+  name: tmp
+  mountPath: /tmp
 
-fileConfigExternals:
+externalConfigMap:
   create: false
   configMaps: []
 
 pod:
   # -- (list) Which ports use (! this port is used even inside the deployment)
   ports: []
-
-#
-# Pod identity and KV connection
-#
-
-# -- Secrect provider class allow to connect to azure kv
-# @default -- -
-secretProviderClass:
-  # -- (bool) create or not the secret provider class manifest
-  create: true
-
-# -- Azure KeyVault connection configuration
-# @default -- -
-keyvault:
-  # -- KV name
-  name: ""
-  # -- Tenant id (uuid)
-  tenantId: ""
 
 serviceAccount:
   create: false
