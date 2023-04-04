@@ -71,12 +71,7 @@ envFieldRef: {}
 
 # -- Configure files to mount as config maps
 configMapFromFile: {}
-
-# -- File config pattern to mount
-fileConfig:
-  create: false
-  fileMode: 420
-  files: {}
+configMapFileMode : 420
 
 podAnnotations: {}
 
