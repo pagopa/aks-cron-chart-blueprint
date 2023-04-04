@@ -62,7 +62,7 @@ spec:
             - name: file-config
               configMap:
                 name: {{ include "cron-chart.fullname" $ }}
-                defaultMode: 420
+                defaultMode: {{ .Values.fileConfig.fileMode }}
                 items:
               {{- range $key, $val := .Values.configMapFromFile }}
                   - key: {{ $key }}
