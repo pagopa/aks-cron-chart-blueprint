@@ -126,3 +126,5 @@ podMonitor:
   # -- (list) Which fileshare use (! this name is used even inside the deployment)
   podMetricsEndpoints: []
 
+
+suspend: false
