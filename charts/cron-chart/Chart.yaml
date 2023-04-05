@@ -2,5 +2,5 @@ apiVersion: v2
 name: cron-chart
 description: A Helm chart for pagoPA cron
 type: application
-version: 2.2.0
+version: 2.3.0
 appVersion: "0.0.0"
