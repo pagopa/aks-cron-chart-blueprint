@@ -17,6 +17,7 @@ cronjob:
   # -- (bool) create the deployment manifest
   create: true
 
+timeZone: ""
 schedule: ""
 concurrencyPolicy: "Allow"
 successfulJobsHistoryLimit: 3
