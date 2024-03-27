@@ -10,6 +10,7 @@ metadata:
     reloader.stakater.com/auto: "true"
 spec:
   schedule: {{ .Values.schedule | quote }}
+  timeZone: {{ .Values.timeZone | quote }}
   concurrencyPolicy: {{ .Values.concurrencyPolicy }}
   suspend: {{ .Values.suspend }}
   successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
