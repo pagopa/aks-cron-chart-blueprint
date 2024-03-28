@@ -1,6 +1,6 @@
 # cron-chart
 
-![Version: 1.2.0](https://img.shields.io/badge/Version-1.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 2.4.0](https://img.shields.io/badge/Version-2.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm chart for pagoPA cron
 
@@ -9,51 +9,48 @@ A Helm chart for pagoPA cron
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` | Pod labels affinity |
-| args | list | `[]` |  |
+| args | list | `[]` | args |
 | command | list | `[]` |  |
-| concurrencyPolicy | string | `"Allow"` |  |
+| concurrencyPolicy | string | `"Allow"` | cronjob.concurrencyPolicy |
+| configMapFileMode | int | `420` | configMapFileMode |
+| configMapFromFile | object | `{}` | Configure files to mount as config maps |
 | cronjob | object | - | Configure deployment |
 | cronjob.create | bool | `true` | create the deployment manifest |
 | envConfig | object | `{}` | Environment config to use for the canary container |
 | envConfigMapExternals | object | {} | Configure values from config maps external to chart. E.g already present into cluster, see documentation |
 | envFieldRef | object | `{}` | Environment config from k8s metadata |
-| envSecret | object | `{}` | Environment secrets to use for the canary container |
-| failedJobsHistoryLimit | int | `1` |  |
-| fileConfig | object | `{"create":false,"fileMode":420,"files":{}}` | File config pattern to mount |
-| fileConfigExternals.configMaps | list | `[]` |  |
-| fileConfigExternals.create | bool | `false` |  |
-| fileShare.create | bool | `false` | create the service manifest |
-| fileShare.folders | list | `[]` | Which fileshare use (! this name is used even inside the deployment) |
+| externalConfigMap | object | `{"configMaps":[],"create":false}` | externalConfigMap |
+| failedJobsHistoryLimit | int | `1` | cronjob.failedJobsHistoryLimit (number) |
 | fullnameOverride | string | `""` | Helm chart fullname override |
 | image.pullPolicy | string | `"Always"` | Pull policy to use |
 | image.repository | string | `""` | Docker reposity for the container |
 | image.tag | string | `"v0.0.0"` | Container TAG |
-| keyvault | object | - | Azure KeyVault connection configuration |
-| keyvault.name | string | `""` | KV name |
-| keyvault.tenantId | string | `""` | Tenant id (uuid) |
 | nameOverride | string | `""` | Helm chart name override |
 | namespace | string | `""` | Namespace in which deploy the cron |
 | nodeSelector | object | `{}` | K8s node selectors |
-| parallelism | int | `1` |  |
+| parallelism | int | `1` | cronjob.parallelism (number) |
+| pod | object | `{"ports":[]}` | pod |
 | pod.ports | list | `[]` | Which ports use (! this port is used even inside the deployment) |
-| podAnnotations | object | `{}` |  |
+| podAnnotations | object | `{}` | podAnnotations |
+| podMonitor | object | `{"create":false,"podMetricsEndpoints":[]}` | podMonitor |
 | podMonitor.create | bool | `false` | Create or not the ingress manifest |
 | podMonitor.podMetricsEndpoints | list | `[]` | Which fileshare use (! this name is used even inside the deployment) |
-| podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| podSecurityContext | object | `{"seccompProfile":{"type":"RuntimeDefault"}}` | podSecurityContext |
+| providedVolumeMount | object | {} | Configure mounted volumes with secrets needed to mount them |
 | resources | object | - | POD resources section |
 | resources.limits | object | `{"cpu":"150m","memory":"128Mi"}` | limits is mandatory |
 | resources.requests | object | `{"cpu":"40m","memory":"96Mi"}` | request is mandatory |
-| schedule | string | `""` |  |
-| secretProviderClass | object | - | Secrect provider class allow to connect to azure kv |
-| secretProviderClass.create | bool | `true` | create or not the secret provider class manifest |
-| securityContext.allowPrivilegeEscalation | bool | `false` |  |
-| serviceAccount.annotations | object | `{}` |  |
-| serviceAccount.create | bool | `false` |  |
-| serviceAccount.name | string | `""` |  |
+| schedule | string | `""` | schedule "0 0 * * *" |
+| secretProvider | object | `{"create":false,"envSecrets":{},"keyvault":{"name":"","tenantId":""}}` | Configure secret provider with secrets to mount as environment variables |
+| securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["all"]},"readOnlyRootFilesystem":true}` | securityContext |
+| serviceAccount | object | `{"annotations":{},"create":false,"name":""}` | serviceAccount |
 | sidecars | list | `[]` | Sidecars, each object has exactly the same schema as a Pod, except it does not have an apiVersion or kind |
-| successfulJobsHistoryLimit | int | `3` |  |
-| terminationGracePeriodSeconds | int | `30` |  |
+| successfulJobsHistoryLimit | int | `3` | cronjob.successfulJobsHistoryLimit (number) |
+| suspend | bool | `false` |  |
+| terminationGracePeriodSeconds | int | `30` | cronjob.terminationGracePeriodSeconds (number) |
+| timeZone | string | `""` | "Europe/Rome" |
+| tmpVolumeMount | object | `{"create":false,"mountPath":"/tmp","name":"tmp"}` | Configure optional tmp volume to mount |
 | tolerations | list | `[]` | Pod taints toleration |
 
 ----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)
+Autogenerated from chart metadata using [helm-docs v1.13.0](https://github.com/norwoodj/helm-docs/releases/v1.13.0)

@@ -17,18 +17,26 @@ cronjob:
   # -- (bool) create the deployment manifest
   create: true
 
+# -- (string) "Europe/Rome"
 timeZone: ""
+# -- schedule "0 0 * * *"
 schedule: ""
+# -- cronjob.concurrencyPolicy
 concurrencyPolicy: "Allow"
+# -- cronjob.successfulJobsHistoryLimit (number)
 successfulJobsHistoryLimit: 3
+# -- cronjob.failedJobsHistoryLimit (number)
 failedJobsHistoryLimit: 1
+# -- cronjob.parallelism (number)
 parallelism: 1
+# -- cronjob.terminationGracePeriodSeconds (number)
 terminationGracePeriodSeconds: 30
 
 # -- Configure values from config maps external to chart. E.g already present into cluster, see documentation
 # @default -- {}
 envConfigMapExternals: {}
 
+# jobTemplate.spec.container --
 image:
   # -- Docker reposity for the container
   repository: ""
@@ -37,8 +45,10 @@ image:
   # -- Pull policy to use
   pullPolicy: Always
 
+# -- args
 args: []
 
+## -- command
 command: []
 
 # -- Sidecars, each object has exactly the same schema as a Pod, except it does not have an apiVersion or kind
@@ -72,14 +82,18 @@ envFieldRef: {}
 
 # -- Configure files to mount as config maps
 configMapFromFile: {}
+# -- configMapFileMode
 configMapFileMode : 420
 
+# -- podAnnotations
 podAnnotations: {}
 
+# -- podSecurityContext
 podSecurityContext:
   seccompProfile:
     type: RuntimeDefault
 
+# -- securityContext
 securityContext:
   readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
@@ -108,24 +122,28 @@ tmpVolumeMount:
   name: tmp
   mountPath: /tmp
 
+# -- externalConfigMap
 externalConfigMap:
   create: false
   configMaps: []
 
+# -- pod
 pod:
   # -- (list) Which ports use (! this port is used even inside the deployment)
   ports: []
 
+# -- serviceAccount
 serviceAccount:
   create: false
   annotations: {}
   name: ""
 
+# -- podMonitor
 podMonitor:
   # -- (bool) Create or not the ingress manifest
   create: false
   # -- (list) Which fileshare use (! this name is used even inside the deployment)
   podMetricsEndpoints: []
 
-
+# -- (bool)
 suspend: false
