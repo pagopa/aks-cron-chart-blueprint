@@ -48,6 +48,9 @@ Extra labels
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ (.Values.image.tag | default .Chart.AppVersion) | quote }}
 {{- end }}
+{{- if .Values.azure.workloadIdentityEnabled }}
+azure.workload.identity/use: "{{ .Values.azure.workloadIdentityEnabled }}"
+{{- end }}
 {{- end }}
 
 

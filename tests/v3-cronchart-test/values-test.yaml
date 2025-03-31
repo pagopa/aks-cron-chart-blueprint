@@ -1,19 +1,15 @@
 cron-chart:
   namespace: "testit"
-  schedule: "0 0 * * *"
+  schedule: "*/1 * * * *"
   timeZone: "Europe/Rome"
   image:
-    repository: "curlimages/curl"
-    tag: "latest"
-    pullPolicy: "Always"
+    repository: "python"
+    tag: "3.9-alpine"
+    pullPolicy: "IfNotPresent"
   command:
-    - "curl"
-    - "-k"
-    - "-m"
-    - "\"300\""
-    - "--header"
-    - "\"Ocp-Apim-Subscription-Key: myapikey\""
-    - "https://api.dev.platform.pagopa.it/api-config-cache/oprod/v1/cache/refresh"
+    - "sh"
+    - "-c"
+    - "echo 'Test succeded!' && date && echo \"--> $MY_KV_SECRET <--\" && sleep 2"
   resources:
     requests:
       memory: "256Mi"
@@ -35,3 +31,13 @@ cron-chart:
                 operator: In
                 values:
                   - user
+  serviceAccount:
+    name: "testit-workload-identity"
+
+  keyvault:
+    name: "dvopla-d-itn-testit-kv"
+    tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
+
+  envSecrets:
+    MY_KV_SECRET: dvopla-d-itn-dev-aks-apiserver-url
+    TEST: test

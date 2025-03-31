@@ -25,7 +25,6 @@ spec:
             {{- toYaml . | nindent 14 }}
           {{- end }}
           labels:
-            aadpodidbinding: "{{ .Values.namespace }}-pod-identity"
             {{- include "cron-chart.selectorLabels" . | nindent 12 }}
             {{- include "cron-chart.extraLabels" . | nindent 12 }}
         spec:
@@ -52,7 +51,7 @@ spec:
                   mountOptions: {{ $v.mountOptions }}
             {{- end }}
             {{- end }}
-            {{- if or .Values.secretProvider.create .Values.providedVolumeMount.create }}
+            {{- if or .Values.secretProviderClass.create .Values.providedVolumeMount.create }}
             - name: secrets-store-inline
               csi:
                 driver: secrets-store.csi.k8s.io
@@ -113,7 +112,7 @@ spec:
                 - name: {{ .Values.tmpVolumeMount.name }}
                   mountPath: {{ .Values.tmpVolumeMount.mountPath }}
                 {{- end }}
-                {{- if or .Values.secretProvider.create .Values.providedVolumeMount.create }}
+                {{- if or .Values.secretProviderClass.create .Values.providedVolumeMount.create }}
                 - name: secrets-store-inline
                   mountPath: "/mnt/secrets-store"
                   readOnly: true
@@ -142,8 +141,8 @@ spec:
                 {{- end }}
               env:
                 #secrets
-                {{- if .Values.secretProvider.create }}
-                {{- range $name, $value := .Values.secretProvider.envSecrets }}
+                {{- if .Values.secretProviderClass.create }}
+                {{- range $name, $value := .Values.envSecrets }}
                 - name: {{ $name }}
                   valueFrom:
                     secretKeyRef:
